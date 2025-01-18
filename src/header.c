@@ -4,10 +4,8 @@
 #include <unistd.h>
 
 #include "header.h"
-#include "test/test.h"
 
 int read_db_header(int fd, struct database_header *db_head) {
-  test();
   if (read(fd, db_head, sizeof(*db_head)) != sizeof(*db_head)) {
     perror("read");
     return -1;

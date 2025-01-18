@@ -3,11 +3,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "./test/test.h"
 #include "header.h"
 
 int main(int argc, char *argv[]) {
-  test();
   if (argc != 2) {
     printf("Usage: %s <filename>\n", argv[0]);
     return 0;
