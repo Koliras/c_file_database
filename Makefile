@@ -1,13 +1,13 @@
 SHELL := /bin/zsh
 TARGET = bin/dbview
-SRC = $(wildcard src/**/*.c)
-OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
+
+run: clean default
 
 default: $(TARGET)
-	bin/dbview test.db
+	${TARGET} test.db
 
 build:
-	gcc -o bin/dbview src/**/*.c
+	gcc -o ${TARGET} src/**/*.c
 
 clean:
 	rm -f bin/*
