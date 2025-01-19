@@ -93,6 +93,10 @@ int write_header_to_db(int fd, struct dbheader_t *header) {
     perror("lseek");
     return STATUS_ERROR;
   }
-  write(fd, header, sizeof(struct dbheader_t));
+  if (write(fd, header, sizeof(struct dbheader_t)) == -1) {
+    perror("write");
+    printf("Failed to write header to the file\n");
+    return STATUS_ERROR;
+  }
   return STATUS_SUCCESS;
 }
