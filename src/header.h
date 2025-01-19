@@ -1,5 +1,5 @@
-#ifndef FILE_H
-#define FILE_H
+#ifndef HEADER_H
+#define HEADER_H
 
 struct database_header {
   unsigned short version;
