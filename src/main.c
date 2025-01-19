@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,7 +20,6 @@ int main(int argc, char *argv[]) {
   bool new_file = false;
   char *filepath = NULL;
   int dbfd = -1;
-  struct dbheader_t *dbheader = NULL;
 
   int i = 1;
   for (i = 1; i < argc; i++) {
@@ -43,32 +43,47 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  struct dbheader_t *dbheader = malloc(sizeof(struct dbheader_t));
+  if (dbheader == NULL) {
+    perror("malloc");
+    printf("Failed to allocate memory for database header\n");
+    return -1;
+  }
+
   if (new_file) {
     dbfd = create_db_file(filepath);
     if (dbfd == STATUS_ERROR) {
       printf("Could not create database file\n");
+      free(dbheader);
       return -1;
     }
-    if (create_db_header(dbfd, &dbheader) == STATUS_ERROR) {
-      printf("Failed to create database header\n");
+
+    create_db_header(dbfd, dbheader);
+    if (write_header_to_db(dbfd, dbheader) == STATUS_ERROR) {
+      printf("Could not write header to db\n");
+      free(dbheader);
+      close(dbfd);
       return -1;
-    }
-    write_header_to_db(dbfd, dbheader);
+    };
   } else {
     dbfd = open_db_file(filepath);
     if (dbfd == STATUS_ERROR) {
       printf("Could not open database file\n");
+      free(dbheader);
       return -1;
     }
 
-    if (validate_db_header(dbfd, &dbheader) == STATUS_ERROR) {
+    if (validate_db_header(dbfd, dbheader) == STATUS_ERROR) {
       printf("Invalid database headers\n");
+      free(dbheader);
+      close(dbfd);
       return -1;
     }
   }
 
   printf("New file: %d\n", new_file);
   printf("Filepath: %s\n", filepath);
+  free(dbheader);
   close(dbfd);
   return 0;
 }
