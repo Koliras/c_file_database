@@ -25,14 +25,6 @@ int create_db_header(int fd, struct dbheader_t **out_header) {
   return STATUS_SUCCESS;
 }
 
-int read_db_header(int fd, struct dbheader_t *db_head) {
-  if (read(fd, db_head, sizeof(*db_head)) != sizeof(*db_head)) {
-    perror("read");
-    return -1;
-  }
-  return 0;
-}
-
 int validate_db_header(int fd, struct dbheader_t **h) {
   if (fd < 0) {
     printf("Got a bad FD from user\n");
