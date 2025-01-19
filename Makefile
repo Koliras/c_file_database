@@ -4,7 +4,7 @@ TARGET = bin/dbview
 run: clean default
 
 default: $(TARGET)
-	${TARGET} test.db
+	${TARGET} -f test.db
 
 build:
 	gcc -o ${TARGET} src/**/*.c

@@ -1,37 +1,36 @@
 #include <fcntl.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "header.h"
+// #include "header.h"
 
 int main(int argc, char *argv[]) {
-  if (argc != 2) {
-    printf("Usage: %s <filename>\n", argv[0]);
-    return 0;
+  bool new_file = false;
+  char *file_path = NULL;
+
+  int i = 1;
+  for (i = 1; i < argc; i++) {
+    char *arg = argv[i];
+    if (strcmp(arg, "-n") == 0) {
+      new_file = true;
+    } else if (strcmp(arg, "-f") == 0) {
+      if (i + 1 >= argc) {
+        printf("No file specified after file_path flag (-f)\n");
+        return -1;
+      }
+      i++;
+      file_path = argv[i];
+    }
   }
 
-  int fd = open(argv[1], O_RDWR | O_CREAT, 0644);
-  if (fd == -1) {
-    perror("open");
+  if (file_path == NULL) {
+    printf("No file specified.\n");
     return -1;
   }
-
-  struct database_header db_head = {0};
-  struct stat db_stat = {0};
-  if (read_db_header(fd, &db_head) != 0) {
-    close(fd);
-    return -1;
-  };
-  if (validate_header(fd, &db_head) != 0) {
-    close(fd);
-    return -1;
-  }
-
-  printf("Database version: %u\n", db_head.version);
-  printf("Database employees: %u\n", db_head.employees);
-  printf("Database length: %u\n", db_head.filelength);
-
-  close(fd);
+  printf("New file: %d\n", new_file);
+  printf("Filepath: %s\n", file_path);
   return 0;
 }
