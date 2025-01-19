@@ -11,6 +11,6 @@ struct dbheader_t {
 
 int create_db_header(int fd, struct dbheader_t **outHeader);
 int read_db_header(int fd, struct dbheader_t *db_head);
-int validate_header(int fd, struct dbheader_t *h);
+int validate_db_header(int fd, struct dbheader_t **h);
 
 #endif
