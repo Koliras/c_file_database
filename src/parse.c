@@ -3,9 +3,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "header.h"
+#include "parse.h"
 
-int read_db_header(int fd, struct database_header *db_head) {
+int read_db_header(int fd, struct dbheader_t *db_head) {
   if (read(fd, db_head, sizeof(*db_head)) != sizeof(*db_head)) {
     perror("read");
     return -1;
@@ -13,14 +13,14 @@ int read_db_header(int fd, struct database_header *db_head) {
   return 0;
 }
 
-int validate_header(int fd, struct database_header *h) {
+int validate_header(int fd, struct dbheader_t *h) {
   struct stat db_stat;
 
   if (fstat(fd, &db_stat) == -1) {
     perror("fstat");
     return -1;
   }
-  if (db_stat.st_size != h->filelength) {
+  if (db_stat.st_size != h->filesize) {
     printf("MALFORMED FILE!");
     return -1;
   }
