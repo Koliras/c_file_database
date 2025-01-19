@@ -5,7 +5,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-// #include "header.h"
+void print_usage(char *executable) {
+  printf("Usage: %s -n -f <database file>\n", executable);
+  printf("\t -n - create a new database file\n");
+  printf("\t -f - (required) path to the database file\n");
+  return;
+}
 
 int main(int argc, char *argv[]) {
   bool new_file = false;
@@ -27,7 +32,8 @@ int main(int argc, char *argv[]) {
   }
 
   if (file_path == NULL) {
-    printf("No file specified.\n");
+    printf("Filepath is a required argument\n");
+    print_usage(argv[0]);
     return -1;
   }
   printf("New file: %d\n", new_file);
