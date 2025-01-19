@@ -1,5 +1,6 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -25,7 +26,7 @@ int create_db_header(int fd, struct dbheader_t **out_header) {
   return STATUS_SUCCESS;
 }
 
-int validate_db_header(int fd, struct dbheader_t **h) {
+int validate_db_header(int fd, struct dbheader_t **out_header) {
   if (fd < 0) {
     printf("Got a bad FD from user\n");
     return STATUS_ERROR;
@@ -74,5 +75,24 @@ int validate_db_header(int fd, struct dbheader_t **h) {
     return STATUS_ERROR;
   }
 
+  *out_header = header;
   return 0;
+}
+
+int write_header_to_db(int fd, struct dbheader_t *header) {
+  if (fd < 0) {
+    printf("Got a bad FD from user\n");
+    return STATUS_ERROR;
+  }
+  header->magic = htonl(header->magic);
+  header->filesize = htonl(header->filesize);
+  header->count = htons(header->count);
+  header->version = htons(header->version);
+
+  if (lseek(fd, 0, SEEK_SET) == -1) {
+    perror("lseek");
+    return STATUS_ERROR;
+  }
+  write(fd, header, sizeof(struct dbheader_t));
+  return STATUS_SUCCESS;
 }

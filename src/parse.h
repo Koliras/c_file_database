@@ -9,7 +9,8 @@ struct dbheader_t {
   unsigned int filesize;
 };
 
-int create_db_header(int fd, struct dbheader_t **outHeader);
-int validate_db_header(int fd, struct dbheader_t **h);
+int create_db_header(int fd, struct dbheader_t **out_header);
+int validate_db_header(int fd, struct dbheader_t **out_header);
+int write_header_to_db(int fd, struct dbheader_t *header);
 
 #endif
