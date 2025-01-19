@@ -22,11 +22,12 @@ int main(int argc, char *argv[]) {
     if (strcmp(arg, "-n") == 0) {
       new_file = true;
     } else if (strcmp(arg, "-f") == 0) {
-      if (i + 1 >= argc) {
-        printf("No file specified after file_path flag (-f)\n");
+      i++;
+      if (argv[i] == NULL) {
+        printf("No filepath specified for `-f` flag\n");
+        print_usage(argv[0]);
         return -1;
       }
-      i++;
       file_path = argv[i];
     }
   }
