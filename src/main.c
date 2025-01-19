@@ -1,5 +1,6 @@
 #include "common.h"
 #include "file.h"
+#include "parse.h"
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -18,6 +19,7 @@ int main(int argc, char *argv[]) {
   bool new_file = false;
   char *filepath = NULL;
   int dbfd = -1;
+  struct dbheader_t *dbheader = NULL;
 
   int i = 1;
   for (i = 1; i < argc; i++) {
@@ -45,6 +47,10 @@ int main(int argc, char *argv[]) {
     dbfd = create_db_file(filepath);
     if (dbfd == STATUS_ERROR) {
       printf("Could not create database file\n");
+      return -1;
+    }
+    if (create_db_header(dbfd, &dbheader) == STATUS_ERROR) {
+      printf("Failed to create database header\n");
       return -1;
     }
   } else {
