@@ -1,3 +1,5 @@
+#include "common.h"
+#include "file.h"
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -14,7 +16,8 @@ void print_usage(char *executable) {
 
 int main(int argc, char *argv[]) {
   bool new_file = false;
-  char *file_path = NULL;
+  char *filepath = NULL;
+  int dbfd = -1;
 
   int i = 1;
   for (i = 1; i < argc; i++) {
@@ -28,16 +31,32 @@ int main(int argc, char *argv[]) {
         print_usage(argv[0]);
         return -1;
       }
-      file_path = argv[i];
+      filepath = argv[i];
     }
   }
 
-  if (file_path == NULL) {
+  if (filepath == NULL) {
     printf("Filepath is a required argument\n");
     print_usage(argv[0]);
     return -1;
   }
+
+  if (new_file) {
+    dbfd = create_db_file(filepath);
+    if (dbfd == STATUS_ERROR) {
+      printf("Could not create database file\n");
+      return -1;
+    }
+  } else {
+    dbfd = open_db_file(filepath);
+    if (dbfd == STATUS_ERROR) {
+      printf("Could not open database file\n");
+      return -1;
+    }
+  }
+
   printf("New file: %d\n", new_file);
-  printf("Filepath: %s\n", file_path);
+  printf("Filepath: %s\n", filepath);
+  close(dbfd);
   return 0;
 }
