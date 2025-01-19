@@ -4,7 +4,7 @@
 struct dbheader_t {
   unsigned int magic;
   unsigned short version;
-  unsigned char count;
+  unsigned short count;
   unsigned int filesize;
 };
 
