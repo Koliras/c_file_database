@@ -19,7 +19,6 @@ void print_usage(char *executable) {
 int main(int argc, char *argv[]) {
   bool new_file = false;
   char *filepath = NULL;
-  int dbfd = -1;
 
   int i = 1;
   for (i = 1; i < argc; i++) {
@@ -43,6 +42,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  int dbfd = -1;
   struct dbheader_t *dbheader = malloc(sizeof(struct dbheader_t));
   if (dbheader == NULL) {
     perror("malloc");
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
       return -1;
     }
 
-    create_db_header(dbfd, dbheader);
+    create_db_header(dbheader);
     if (write_header_to_db(dbfd, dbheader) == STATUS_ERROR) {
       printf("Could not write header to db\n");
       free(dbheader);

@@ -2,6 +2,8 @@
 #define PARSE_H
 
 #define HEADER_MAGIC 0x474f4f53
+#define PROGRAM_VERSION 0x1
+
 struct dbheader_t {
   unsigned int magic;
   unsigned short version;
@@ -9,7 +11,7 @@ struct dbheader_t {
   unsigned int filesize;
 };
 
-void create_db_header(int fd, struct dbheader_t *out_header);
+void create_db_header(struct dbheader_t *out_header);
 int validate_db_header(int fd, struct dbheader_t *out_header);
 int write_header_to_db(int fd, struct dbheader_t *header);
 

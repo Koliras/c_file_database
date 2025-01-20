@@ -8,7 +8,7 @@
 #include "common.h"
 #include "parse.h"
 
-void create_db_header(int fd, struct dbheader_t *header) {
+void create_db_header(struct dbheader_t *header) {
   header->version = PROGRAM_VERSION;
   header->count = 0x0;
   header->magic = HEADER_MAGIC;
@@ -39,7 +39,7 @@ int validate_db_header(int fd, struct dbheader_t *header) {
 
   struct stat dbstat = {0};
   if (fstat(fd, &dbstat) != 0) {
-    printf("Failed to read data about a file\n");
+    printf("Failed to read data about the file\n");
     return STATUS_ERROR;
   }
 
