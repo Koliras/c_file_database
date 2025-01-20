@@ -19,6 +19,7 @@ void print_usage(char *executable) {
 int main(int argc, char *argv[]) {
   bool new_file = false;
   char *filepath = NULL;
+  struct employee_t *employees = NULL;
 
   int i = 1;
   for (i = 1; i < argc; i++) {
@@ -81,9 +82,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  if (read_employees(dbfd, dbheader, &employees) != STATUS_SUCCESS) {
+    printf("Failed to read employees\n");
+    return 0;
+  }
+
   printf("New file: %d\n", new_file);
   printf("Filepath: %s\n", filepath);
   free(dbheader);
+  free(employees);
   close(dbfd);
   return 0;
 }
