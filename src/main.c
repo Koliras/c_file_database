@@ -36,6 +36,10 @@ int main(int argc, char *argv[]) {
         return -1;
       }
       filepath = argv[i];
+    } else {
+      printf("Unknown option %s\n", argv[i]);
+      print_usage(argv[0]);
+      return -1;
     }
   }
 
