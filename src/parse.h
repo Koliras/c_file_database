@@ -21,7 +21,6 @@ void create_db_header(struct dbheader_t *out_header);
 int validate_db_header(int fd, struct dbheader_t *out_header);
 int write_header_to_db(int fd, struct dbheader_t *header);
 
-int read_employees(int fd, struct dbheader_t *header,
-                   struct employee_t **out_employees);
+int read_employees(int fd, int count, struct employee_t *out_employees);
 
 #endif

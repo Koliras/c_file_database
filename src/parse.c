@@ -2,7 +2,6 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -70,26 +69,15 @@ int write_header_to_db(int fd, struct dbheader_t *out_header) {
   return STATUS_SUCCESS;
 }
 
-int read_employees(int fd, struct dbheader_t *header,
-                   struct employee_t **out_employees) {
-  int count = header->count;
-  struct employee_t *employees = calloc(count, sizeof(struct employee_t));
-  if (employees == NULL) {
-    printf("Malloc failed to allocate data for employees\n");
-    return STATUS_ERROR;
-  }
-
-  if (read(fd, employees, count * sizeof(struct employee_t)) == -1) {
+int read_employees(int fd, int count, struct employee_t *out_employees) {
+  if (read(fd, out_employees, count * sizeof(struct employee_t)) == -1) {
     perror("read");
-    free(employees);
     return STATUS_ERROR;
   }
 
   int i = 0;
   for (i = 0; i < count; i++) {
-    employees[i].hours = htons(employees[i].hours);
+    out_employees[i].hours = htons(out_employees[i].hours);
   }
-
-  *out_employees = employees;
   return STATUS_SUCCESS;
 }

@@ -76,8 +76,16 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  if (read_employees(dbfd, &dbheader, &employees) != STATUS_SUCCESS) {
+  employees = malloc(dbheader.count * sizeof(struct employee_t));
+  if (employees == NULL) {
+    printf("Failed to allocate memory for employees\n");
+    return -1;
+  }
+
+  if (read_employees(dbfd, dbheader.count, employees) == STATUS_ERROR) {
     printf("Failed to read employees\n");
+    free(employees);
+    close(dbfd);
     return 0;
   }
 
