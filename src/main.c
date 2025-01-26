@@ -1,6 +1,3 @@
-#include "common.h"
-#include "file.h"
-#include "parse.h"
 #include <fcntl.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -8,6 +5,10 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include "common.h"
+#include "file.h"
+#include "parse.h"
 
 void print_usage(char *executable) {
   printf("Usage: %s -n -f <database file>\n", executable);
@@ -43,37 +44,15 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  if (filepath == NULL) {
-    printf("Filepath is a required argument\n");
-    print_usage(argv[0]);
+  dbfd = get_db_file_with_header(filepath, new_file, &dbheader);
+  if (dbfd == STATUS_ERROR) {
     return -1;
   }
 
-  if (new_file) {
-    dbfd = create_db_file(filepath);
-    if (dbfd == STATUS_ERROR) {
-      printf("Could not create database file\n");
-      return -1;
-    }
-
-    create_db_header(&dbheader);
-    if (write_header_to_db(dbfd, &dbheader) == STATUS_ERROR) {
-      printf("Could not write header to db\n");
-      close(dbfd);
-      return -1;
-    };
-  } else {
-    dbfd = open_db_file(filepath);
-    if (dbfd == STATUS_ERROR) {
-      printf("Could not open database file\n");
-      return -1;
-    }
-
-    if (validate_db_header(dbfd, &dbheader) == STATUS_ERROR) {
-      printf("Invalid database headers\n");
-      close(dbfd);
-      return -1;
-    }
+  if (!new_file && validate_db_header(dbfd, &dbheader) == STATUS_ERROR) {
+    printf("Invalid database headers\n");
+    close(dbfd);
+    return -1;
   }
 
   employees = malloc(dbheader.count * sizeof(struct employee_t));
@@ -89,8 +68,6 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  printf("New file: %d\n", new_file);
-  printf("Filepath: %s\n", filepath);
   free(employees);
   close(dbfd);
   return 0;
